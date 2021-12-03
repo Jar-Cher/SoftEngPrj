@@ -10,15 +10,20 @@ import java.util.*
 
 
 fun main(args: Array<String>) {
-    WeatherWidget.getTemperature(134)
-    //WeatherWidget.getTemperature("Saint Petersbug")
+    val input = args.fold("") {str, element -> "$str$element " }.trim()
+    //println(args[1])
+    if (Regex("""\d+""").matches(input))
+        WeatherWidget.getTemperature(input.toInt())
+    else
+        WeatherWidget.getTemperature(input)
 }
 
 class WeatherWidget() {
 
     companion object {
 
-        private val citiesDB = ObjectMapper().readTree(File("city.list.json").readText())
+        private val citiesDB = ObjectMapper()
+            .readTree(File("src/main/resources/city.list.json").readText())
 
         fun getTemperature(id: Int) {
             try {
