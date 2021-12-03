@@ -26,7 +26,12 @@ class WeatherWidget() {
             val response = httpClient.execute(get)
             val weatherString = EntityUtils.toString(response.entity)
             val actualObj = ObjectMapper().readTree(weatherString)
-            println((actualObj.findValue("temp").toString().toDouble()-273.15).toInt())
+            println("Current weather in " + actualObj.findValue("name").toString().trim { it=='\"' } + ":")
+            println("Temperature: " + (actualObj.findValue("temp").toString().toDouble()-273.15).toInt() + "°")
+            println(actualObj.findValue("description").toString()
+                .trim { it=='\"' }
+                .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() })
+            println("Humidity " + (actualObj.findValue("humidity").toString()).uppercase() + "%")
         }
 
         fun getTemperature(city: String) {
