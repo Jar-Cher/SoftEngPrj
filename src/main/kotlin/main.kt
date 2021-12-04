@@ -22,8 +22,7 @@ class WeatherWidget() {
 
     companion object {
 
-        private val citiesDB = ObjectMapper()
-            .readTree(File("src/main/resources/city.list.json").readText())
+        private val citiesDB = ObjectMapper().readTree(this::class.java.getResource("city.list.json").readText())
 
         fun getTemperature(id: Int) {
             try {
