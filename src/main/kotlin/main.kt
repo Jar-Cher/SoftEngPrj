@@ -1,13 +1,12 @@
 
+
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.impl.client.HttpClients
 import org.apache.http.util.EntityUtils
-import java.io.File
 import java.io.IOException
 import java.util.*
-
 
 fun main(args: Array<String>) {
     val input = args.fold("") {str, element -> "$str$element " }.trim()
