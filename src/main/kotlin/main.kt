@@ -1,14 +1,25 @@
+package softEngPrj
 
-
+import ch.qos.logback.classic.Level
+import ch.qos.logback.classic.Logger
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.impl.client.HttpClients
 import org.apache.http.util.EntityUtils
+import org.slf4j.LoggerFactory
+import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.core.io.ClassPathResource
 import java.io.IOException
 import java.util.*
 
+@SpringBootApplication
+open class Main
+
 fun main(args: Array<String>) {
+    val logger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME) as Logger
+    logger.level = Level.toLevel("error")
+
     val input = args.fold("") {str, element -> "$str$element " }.trim()
     //println(args[1])
     if (Regex("""\d+""").matches(input))
@@ -21,7 +32,7 @@ class WeatherWidget() {
 
     companion object {
 
-        private val citiesDB = ObjectMapper().readTree(this::class.java.getResource("city.list.json").readText())
+        private val citiesDB = ObjectMapper().readTree(ClassPathResource("city.list.json").inputStream)
 
         fun getTemperature(id: Int) {
             try {
