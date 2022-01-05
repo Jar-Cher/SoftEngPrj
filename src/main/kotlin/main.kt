@@ -1,27 +1,41 @@
-
+package me.jaros
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.impl.client.HttpClients
 import org.apache.http.util.EntityUtils
+import org.springframework.boot.Banner
+import org.springframework.boot.SpringApplication
+import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.runApplication
 import java.io.IOException
 import java.util.*
 
+
+@SpringBootApplication
+open class Main
+
 fun main(args: Array<String>) {
-    val input = args.fold("") {str, element -> "$str$element " }.trim()
-    //println(args[1])
-    if (Regex("""\d+""").matches(input))
-        WeatherWidget.getTemperature(input.toInt())
-    else
-        WeatherWidget.getTemperature(input)
+    runApplication<Main>(*args)
+    val app = SpringApplication(WeatherWidget::class.java)
+    app.setBannerMode(Banner.Mode.OFF)
+    WeatherWidget.main(args)
 }
 
-class WeatherWidget() {
+class WeatherWidget {
 
     companion object {
 
-        private val citiesDB = ObjectMapper().readTree(this::class.java.getResource("city.list.json").readText())
+        fun main(args: Array<String>) {
+            val input = args.fold("") {str, element -> "$str$element " }.trim()
+            if (Regex("""\d+""").matches(input))
+                getTemperature(input.toInt())
+            else
+                getTemperature(input)
+        }
+
+        private val citiesDB = ObjectMapper().readTree(javaClass.classLoader.getResourceAsStream("city.list.json"))
 
         fun getTemperature(id: Int) {
             try {
