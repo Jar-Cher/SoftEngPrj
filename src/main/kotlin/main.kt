@@ -37,7 +37,8 @@ class WeatherWidget {
 
         private val citiesDB = ObjectMapper().readTree(javaClass.classLoader.getResourceAsStream("city.list.json"))
 
-        fun getTemperature(id: Int) {
+        fun getTemperature(id: Int): String {
+            var answer = "Unknown error"
             try {
                 val httpClient = HttpClients.createDefault()
                 val get =
@@ -46,33 +47,49 @@ class WeatherWidget {
                 val weatherString = EntityUtils.toString(response.entity)
                 val actualObj = ObjectMapper().readTree(weatherString)
                 try {
-                    println("Current weather in " + actualObj.findValue("name").toString().trim { it == '\"' } + ":")
-                    println(
-                        "Temperature: " + (actualObj.findValue("temp").toString().toDouble() - 273.15).toInt() + "°"
-                    )
-                    println(actualObj.findValue("description").toString()
-                        .trim { it == '\"' }
-                        .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() })
-                    println("Humidity " + (actualObj.findValue("humidity").toString()).uppercase() + "%")
+                    val builder = StringBuilder()
+                    builder.append("Current weather in ")
+                        .append(actualObj.findValue("name").toString().trim { it == '\"' })
+                        .append(":")
+                        .append("\n")
+                        .append("Temperature: ")
+                        .append((actualObj.findValue("temp").toString().toDouble() - 273.15).toInt())
+                        .append("°")
+                        .append("\n")
+                        .append(actualObj.findValue("description")
+                                .toString()
+                                .trim { it == '\"' }
+                                .replaceFirstChar {
+                                    if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
+                                })
+                        .append("\n")
+                        .append("Humidity ")
+                        .append((actualObj.findValue("humidity").toString()).uppercase())
+                        .append("%")
+                    answer = builder.toString()
                 } catch (e: NullPointerException) {
-                    println("Error: found no city with id# $id")
+                    answer = "Error: found no city with id# $id"
                 }
                 httpClient.close()
             } catch (e: IOException) {
-                println("Network error")
+                answer = "Network error"
             }
+            println(answer)
+            return answer
         }
 
-        fun getTemperature(city: String) {
+        fun getTemperature(city: String): String {
             val cityIds = citiesDB.findValues("id")
             val cityOrder = ObjectMapper()
-                .readValue(citiesDB.findValues("name").toString(), object: TypeReference<List<String>>() {})
+                .readValue(citiesDB.findValues("name").toString(), object : TypeReference<List<String>>() {})
                 .indexOf(city)
             //println(cityIds[cityOrder].asInt())
-            try {
+            return try {
                 getTemperature(cityIds[cityOrder].asInt())
             } catch (e: IndexOutOfBoundsException) {
-                println("Error: found no city named $city")
+                val errorMessage = "Error: found no city named $city"
+                println(errorMessage)
+                errorMessage
             }
         }
     }
