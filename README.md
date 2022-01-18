@@ -1,3 +1,8 @@
+## CI for master:
+[![CI master](https://github.com/Jar-Cher/SoftEngPrj/actions/workflows/maven.yml/badge.svg?branch=master)](https://github.com/Jar-Cher/SoftEngPrj/actions/workflows/maven.yml)
+## CI for Develop:
+[![CI Develop](https://github.com/Jar-Cher/SoftEngPrj/actions/workflows/maven.yml/badge.svg?branch=Develop)](https://github.com/Jar-Cher/SoftEngPrj/actions/workflows/maven.yml)
+
 # SoftEngPrj
 Software engineering excercise
 
